@@ -20,15 +20,21 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
 			return checkIn.user_id === userId && isOnSameDate;
 		});
 
-		if(!checkOnSameDate) {
+		if (!checkOnSameDate) {
 			return null;
 		}
 
 		return checkOnSameDate;
 	}
 
+	async findManyByUserId(userId: string, page: number) {
+		return this.items
+			.filter(item => item.user_id === userId)
+			.slice((page - 1) * 20, page * 20);
+	}
+
 	async create(data: Prisma.CheckInUncheckedCreateInput) {
-		const checkIn =  {
+		const checkIn = {
 			id: randomUUID(),
 			user_id: data.user_id,
 			gym_id: data.gym_id,
